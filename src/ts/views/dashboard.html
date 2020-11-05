@@ -1,0 +1,32 @@
+<div class="oj-hybrid-padding">
+  <div class="row">
+    <oj-input-text
+      on-value-changed="[[handleInputChange]]"
+      value="{{data}}"
+    ></oj-input-text>
+    <p>Display as:</p>
+    <oj-button on-oj-action="[[buttonClick]]" id="pie">Pie-chart</oj-button>
+    <oj-button on-oj-action="[[buttonClick]]" id="bar">Bar-chart</oj-button>
+    <oj-button on-oj-action="[[buttonClick]]" id="scatter">
+      Scatter-chart
+    </oj-button>
+  </div>
+  <oj-chart
+    id="barChart"
+    type="[[selectedChart]]"
+    data="[[chartDataProvider]]"
+    animation-on-display="auto"
+    animation-on-data-change="auto"
+    hover-behavior="dim"
+    style="max-width: 500px; width: 100%; height: 350px"
+  >
+    <template slot="itemTemplate" data-oj-as="item">
+      <oj-chart-item
+        value="[[item.data.value]]"
+        group-id="[[ [item.data.group] ]]"
+        series-id="[[item.data.series]]"
+      >
+      </oj-chart-item>
+    </template>
+  </oj-chart>
+</div>

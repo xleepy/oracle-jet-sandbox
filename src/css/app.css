@@ -1,0 +1,15 @@
+/*
+    Document   : override
+    Created on : <date>
+    Author     : <author>
+    Description:
+        This is where any of your application specific styles should be included
+*/
+
+.row {
+  display: inline-flex;
+}
+
+.row * + * {
+  margin-left: 10px;
+}
