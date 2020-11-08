@@ -31,6 +31,7 @@ class DashboardViewModel implements ViewModel {
     { value: "pie", label: "Pie" },
     { value: "bar", label: "Bar" },
     { value: "scatter", label: "Scatter" },
+    { value: "lineWithArea", label: "Line chart" },
   ];
 
   data = ko.observable("");
@@ -57,14 +58,14 @@ class DashboardViewModel implements ViewModel {
     rows.forEach((row) => {
       const cells = row.split("\\t");
       cells.forEach((cell, idx) => {
-        let charObject = data[idx] ?? { id: idx };
+        let parsedObject = data[idx] ?? { id: idx };
         const isSeries = cell.includes(SERIES);
         const isGroup = cell.includes(GROUP);
         // for charts group and series can be provided
         if (isSeries || isGroup) {
           const { key, value } = parseCell(cell, isSeries ? SERIES : GROUP);
-          charObject = {
-            ...charObject,
+          parsedObject = {
+            ...parsedObject,
             [key]: isSeries ? `Series ${value}` : value,
           };
         } else {
@@ -72,13 +73,13 @@ class DashboardViewModel implements ViewModel {
           const matchedNumber = cell.match(/\d+/g);
           if (matchedNumber) {
             const [num] = matchedNumber;
-            charObject = {
-              ...charObject,
+            parsedObject = {
+              ...parsedObject,
               [cell.substring(0, cell.length - num.length)]: Number(num),
             };
           }
         }
-        data[idx] = { ...charObject };
+        data[idx] = { ...parsedObject };
       });
     });
     return data;
