@@ -25,6 +25,7 @@ function parseCell(value: string, key: string): { key: string; value: string } {
 // pie char data: series1\tseries2\tseries3\tseries4\tseries5\ngroupA\tgroupA\tgroupA\tgroupA\tgroupA\nvalue1\tvalue25\tvalue3\tvalue4\tvalue20
 // bar chart data: series1\tseries2\tseries3\tseries4\tseries5\ngroupGroupA\tgroupB\tgroupC\tgroupD\tgroupE\nvalue1\tvalue25\tvalue3\tvalue4\tvalue20
 // scatter plot data: series1\tseries1\tseries2\tseries2\ngroupA\tgroupB\tgroupC\tgroupA\nx15\tx25\tx33\tx44\ny25\ty30\ty23\ty22\nz5\tz12\tz8\tz5
+// box plot data: series1\tseries1\ngroupA\tgroupB\nlow3\tlow21\nhigh28\thigh65\nq181\tq124\nq212\tq236\nq316\tq344\noutliners[15]\toutliners[]
 
 class DashboardViewModel implements ViewModel {
   types = [
@@ -32,6 +33,7 @@ class DashboardViewModel implements ViewModel {
     { value: "bar", label: "Bar" },
     { value: "scatter", label: "Scatter" },
     { value: "lineWithArea", label: "Line chart" },
+    { value: "boxPlot", label: "Boxplot" },
   ];
 
   data = ko.observable("");
@@ -69,19 +71,37 @@ class DashboardViewModel implements ViewModel {
             [key]: isSeries ? `Series ${value}` : value,
           };
         } else {
-          // rest of values are string key and number value pair, for now will crash if user will pass array
+          // rest of values are string key and number value pair
           const matchedNumber = cell.match(/\d+/g);
-          if (matchedNumber) {
+
+          if (matchedNumber && cell.includes("q")) {
             const [num] = matchedNumber;
+            // remove first number from string
+            const value = num.substring(1);
             parsedObject = {
               ...parsedObject,
-              [cell.substring(0, cell.length - num.length)]: Number(num),
+              [cell.substring(0, cell.length - value.length)]: Number(value),
+            };
+          }
+          if (!cell.includes("q") && matchedNumber) {
+            const isArrayLike = cell.includes("[");
+            parsedObject = {
+              ...parsedObject,
+              [cell.substring(
+                0,
+                isArrayLike
+                  ? cell.indexOf("[")
+                  : cell.length - matchedNumber[0].length
+              )]: isArrayLike
+                ? matchedNumber.map(Number)
+                : Number(matchedNumber[0]),
             };
           }
         }
         data[idx] = { ...parsedObject };
       });
     });
+    console.log(data);
     return data;
   };
 

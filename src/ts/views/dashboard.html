@@ -13,6 +13,9 @@
     <oj-button on-oj-action="[[buttonClick]]" id="lineWithArea">
       Line chart
     </oj-button>
+    <oj-button on-oj-action="[[buttonClick]]" id="boxPlot">
+      Box plot
+    </oj-button>
   </div>
   <oj-chart
     id="barChart"
@@ -25,6 +28,15 @@
   >
     <template slot="itemTemplate" data-oj-as="item">
       <oj-chart-item
+        low="[[item.data.low]]"
+        high="[[item.data.high]]"
+        q1="[[item.data.q1]]"
+        q2="[[item.data.q2]]"
+        q3="[[item.data.q3]]"
+        items="[[item.data.outliers]]"
+        x="[[item.data.x]]"
+        y="[[item.data.y]]"
+        items="[[item.data.outliers]]"
         value="[[item.data.value]]"
         group-id="[[ [item.data.group] ]]"
         series-id="[[item.data.series]]"
@@ -32,4 +44,10 @@
       </oj-chart-item>
     </template>
   </oj-chart>
+  <demo-chart-three-d-effect-control
+    id="threeDControl"
+    three-d-effect="{{threeDValue}}"
+    aria-controls="pieChart"
+  >
+  </demo-chart-three-d-effect-control>
 </div>
